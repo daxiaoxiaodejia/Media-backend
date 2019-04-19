@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <title>Users &laquo; Admin</title>
+  <link rel="stylesheet" href="/assets/vendors/bootstrap/css/bootstrap.css">
+  <link rel="stylesheet" href="/assets/vendors/font-awesome/css/font-awesome.css">
+  <link rel="stylesheet" href="/assets/vendors/nprogress/nprogress.css">
+  <link rel="stylesheet" href="/assets/css/admin.css">
+  <script src="/assets/vendors/nprogress/nprogress.js"></script>
+  <style>
+    .error{
+      color: red;
+    }
+  
+  </style>
+</head>
+
+<body>
+  <script>NProgress.start()</script>
+
+
+  <div class="container-fluid">
+
+    <div class="row">
+      <div class="col-md-4">
+        <form id="addForm">
+          <h2>添加新用户</h2>
+          <div class="form-group">
+            <label for="email">邮箱</label>
+            <input id="email" class="form-control" name="email" type="email" placeholder="邮箱">
+          </div>
+          <div class="form-group">
+            <label for="nickname">昵称</label>
+            <input id="nickname" class="form-control" name="nickname" type="text" placeholder="昵称">
+          </div>
+          <div class="form-group">
+            <label for="password">密码</label>
+            <input id="password" class="form-control" name="password" type="text" placeholder="密码">
+          </div>
+          <div class="form-group">
+            <label for="password">确认密码</label>
+            <input id="password2" class="form-control" name="password2" type="text" placeholder="确认密码">
+          </div>
+          <div class="form-group">
+            <label for="state">状态</label>
+            <input id="state" name="state" type="radio" value="激活">激活
+            <input id="state" name="state" type="radio" value="禁用">禁用
+          </div>
+          <div class="form-group">
+            <button id="addBtn" class="btn btn-primary" type="submit">添加</button>
+          </div>
+        </form>
+      </div>
+
+
+    </div>
+  </div>
+
+
+
+  <script src="/assets/vendors/jquery/jquery.js"></script>
+  <script src="/assets/vendors/bootstrap/js/bootstrap.js"></script>
+  <script type="text/javascript" src="/assets/vendors/validate/jquery.validate.js"></script>
+  <script type="text/javascript">
+    $('#addForm').validate({
+      rules: {
+        email: {
+          required: true,
+          email: true,
+          rangelength: [5, 20]
+        },
+        nickname: {
+          required: true,
+          rangelength: [5, 20]
+        },
+        password: {
+          required: true,
+          rangelength: [5, 20]
+        },
+        password2: {
+          equalTo: '#password',
+        }
+      },
+      messages: {
+        email: {
+          required: "邮箱不能为空",
+          email: "用户名必须是一个邮箱",
+          rangelength: "邮箱长度在5-20位之间"
+        },
+        nickname: {
+          required: "昵称不能为空",
+          rangelength: "昵称长度在5-20位之间"
+        },
+        password: {
+          required: "密码不能为空",
+          rangelength: "密码长度在5-20位之间"
+        },
+        password2: {
+          equalTo: "两次密码不一致"
+        }
+      },
+      submitHandler: function () {
+        $.ajax({
+          url: '/admin/user/addUserDeal',
+          type: "post",
+          data: $('#addForm').serialize(),
+          dataType: 'json',
+          success: function (result) {
+            // console.log(result)
+            parent.layer.alert(result.message, function (index_alert) {
+              if (result.code == 200) {
+                var index = parent.layer.getFrameIndex(window.name);
+                parent.layer.close(index);
+                parent.location.reload();
+              }
+              parent.layer.close(index_alert)
+            })
+          }
+        })
+      }
+    })
+
+
+
+
+
+  </script>
+
+
+  <script>NProgress.done()</script>
+</body>
+
+</html>
